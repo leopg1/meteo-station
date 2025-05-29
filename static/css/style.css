@@ -1,0 +1,212 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --dark-color: #2c3e50;
+    --light-color: #ecf0f1;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --info-color: #1abc9c;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Sidebar styles */
+.sidebar {
+    background-color: var(--dark-color);
+    color: white;
+    min-height: 100vh;
+    padding-top: 1rem;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+    margin: 0.2rem 0;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.main-content {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+}
+
+/* Card styles */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    border-bottom: none;
+    padding: 1rem;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Sensor card styles */
+.sensor-card {
+    text-align: center;
+    height: 100%;
+}
+
+.sensor-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.sensor-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.sensor-unit {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.sensor-card .progress {
+    height: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Wind direction indicator */
+.wind-direction-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.wind-direction-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.wind-direction-arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 70px;
+    background-color: var(--primary-color);
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%) rotate(0deg);
+}
+
+.wind-direction-labels {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.wind-direction-label {
+    position: absolute;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.wind-direction-label.north {
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.wind-direction-label.east {
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+}
+
+.wind-direction-label.south {
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.wind-direction-label.west {
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+}
+
+/* Refresh button animation */
+.refresh-btn i {
+    transition: transform 0.5s ease;
+}
+
+.refresh-btn:hover i {
+    transform: rotate(180deg);
+}
+
+/* Stat card styles */
+.stat-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.stat-card i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.stat-card h3 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+.stat-card table {
+    margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        min-height: auto;
+        position: relative;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .sensor-value {
+        font-size: 2rem;
+    }
+}

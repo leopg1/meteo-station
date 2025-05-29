@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stație Meteo - Statistici</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        // Configurare Tailwind
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49'
+                        },
+                        secondary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16'
+                        },
+                        dark: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-200 antialiased">
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-dark-900 text-white">
+                <!-- Logo & Title -->
+                <div class="flex flex-col items-center justify-center h-20 bg-dark-950 shadow-md">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-cloud-bolt text-primary-500 text-3xl"></i>
+                        <span class="ml-2 text-xl font-bold">Stație Meteo</span>
+                    </div>
+                    <span class="text-xs text-gray-400 mt-1">Raspberry Pi 4</span>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex-grow px-2 py-5 space-y-1">
+                    <a href="/" class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-dark-800 hover:text-white transition-colors">
+                        <i class="fa-solid fa-gauge-high mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/history" class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-dark-800 hover:text-white transition-colors">
+                        <i class="fa-solid fa-clock-rotate-left mr-3"></i>
+                        <span>Istoric Date</span>
+                    </a>
+                    <a href="/statistics" class="flex items-center px-4 py-3 text-white bg-primary-700 rounded-lg shadow-md transition-colors">
+                        <i class="fa-solid fa-chart-pie mr-3"></i>
+                        <span>Statistici</span>
+                    </a>
+                </nav>
+                
+                <!-- Footer -->
+                <div class="p-4 text-center text-xs text-gray-400 mt-auto mb-5">
+                    <p>Versiune 1.0.0</p>
+                    <p>&copy; <span id="current-year"></span></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden absolute top-4 left-4 z-50">
+            <button id="mobile-menu-button" class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="fixed inset-0 z-40 hidden bg-dark-900 text-white pt-16 pb-6 px-6">
+            <button id="close-menu-button" class="absolute top-4 right-4 text-gray-300 hover:text-white">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+            <div class="flex flex-col space-y-4 mt-4">
+                <a href="/" class="py-3 px-4 rounded-lg hover:bg-dark-800 text-gray-200 font-medium">
+                    <i class="fa-solid fa-gauge-high mr-3"></i> Dashboard
+                </a>
+                <a href="/history" class="py-3 px-4 rounded-lg hover:bg-dark-800 text-gray-200 font-medium">
+                    <i class="fa-solid fa-clock-rotate-left mr-3"></i> Istoric Date
+                </a>
+                <a href="/statistics" class="py-3 px-4 rounded-lg bg-primary-700 text-white font-medium">
+                    <i class="fa-solid fa-chart-pie mr-3"></i> Statistici
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-gray-900">
+            <!-- Header -->
+            <div class="sticky top-0 z-10 bg-gray-800 shadow-md border-b border-gray-700">
+                <div class="flex justify-between items-center h-16 px-4 md:px-6 lg:px-8">
+                    <h1 class="text-2xl font-semibold text-gray-100">Statistici</h1>
+                </div>
+            </div>
+
+            <!-- Statistics Content -->
+            <div class="p-4 md:p-6 lg:p-8 pb-24">
+                <!-- Date Range Card -->
+                <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-700">
+                    <div class="px-6 py-4 bg-gradient-to-r from-gray-700 to-gray-900 text-white flex items-center">
+                        <i class="fa-solid fa-calendar-days mr-2"></i>
+                        <h3 class="text-lg font-semibold">Perioada</h3>
+                    </div>
+                    <div class="p-6">
+                        <form id="stats-filter-form" class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1 space-y-2">
+                                <label for="stats-start-date" class="block text-sm font-medium text-gray-300">Data început</label>
+                                <input type="date" id="stats-start-date" class="block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            <div class="flex-1 space-y-2">
+                                <label for="stats-end-date" class="block text-sm font-medium text-gray-300">Data sfârșit</label>
+                                <input type="date" id="stats-end-date" class="block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            <div class="flex items-end">
+                                <button type="submit" class="inline-flex justify-center items-center px-6 py-2 border border-transparent rounded-md shadow-md text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+                                    <i class="fa-solid fa-calculator mr-2"></i> Calculează
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Comparative Chart -->
+                <div class="mt-8 bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-700">
+                    <div class="px-6 py-4 bg-gradient-to-r from-gray-700 to-gray-900 text-white flex items-center">
+                        <i class="fa-solid fa-chart-column mr-2"></i>
+                        <h3 class="text-lg font-semibold">Comparație valori</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="w-full h-80" id="stats-chart-container">
+                            <canvas id="stats-chart"></canvas>
+                        </div>
+                        <p class="text-xs text-gray-400 text-center mt-3">
+                            Notă: Valorile sunt normalizate pentru a permite comparația între diferite unități de măsură
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8" id="stats-cards">
+                    <div class="col-span-full flex justify-center py-10">
+                        <div class="flex flex-col items-center">
+                            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+                            <p class="mt-4 text-gray-300">Se calculează statisticile...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Dependencies -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/statistics.js') }}"></script>
+</body>
+</html>
